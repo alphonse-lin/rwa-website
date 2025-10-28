@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RWA 资产代币化平台 - Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .wallet-section {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .role-switch {
+            display: flex;
+            gap: 10px;
+            background: #f0f0f0;
+            padding: 5px;
+            border-radius: 10px;
+        }
+
+        .role-btn {
+            padding: 8px 20px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .role-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .connect-btn {
+            padding: 10px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .connect-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .wallet-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+
+        .wallet-address {
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-item {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            color: white;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .stat-sub {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .input-addon {
+            padding: 12px 15px;
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .info-box {
+            background: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .info-box-title {
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 8px;
+        }
+
+        .info-box-text {
+            font-size: 14px;
+            color: #1e3a8a;
+            line-height: 1.6;
+        }
+
+        .request-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .request-item {
+            padding: 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .request-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .request-id {
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .request-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            font-size: 14px;
+        }
+
+        .detail-label {
+            color: #6b7280;
+            margin-bottom: 3px;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e5e7eb;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 25px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -26px;
+            top: 4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #667eea;
+        }
+
+        .timeline-dot.completed {
+            background: #10b981;
+            border-color: #10b981;
+        }
+
+        .timeline-dot.pending {
+            background: #fbbf24;
+            border-color: #fbbf24;
+        }
+
+        .timeline-content {
+            font-size: 14px;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #1f2937;
+        }
+
+        .timeline-desc {
+            color: #6b7280;
+        }
+
+        .timeline-time {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 5px;
+        }
+
+        .nav-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: #667eea;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .nav-change {
+            text-align: center;
+            font-size: 18px;
+            color: #10b981;
+            margin-bottom: 30px;
+        }
+
+        .nav-change.negative {
+            color: #ef4444;
+        }
+
+        .document-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .document-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .document-info {
+            flex: 1;
+        }
+
+        .document-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+
+        .document-meta {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .document-link {
+            padding: 8px 15px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            color: #92400e;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            color: #065f46;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            color: #1e40af;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #667eea;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">🏢 RWA Platform</div>
+            <div class="wallet-section">
+                <div class="role-switch">
+                    <button class="role-btn active" id="investorBtn">投资人视图</button>
+                    <button class="role-btn" id="adminBtn">管理员视图</button>
+                </div>
+                <div id="walletConnect">
+                    <button class="connect-btn" onclick="connectWallet()">连接钱包</button>
+                </div>
+                <div id="walletConnected" class="wallet-info hidden">
+                    <div class="status-dot"></div>
+                    <span class="wallet-address">0x742d...5e8a</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 投资人视图 -->
+        <div id="investorView" class="main-content">
+            <!-- 左侧 - 我的资产 -->
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">💰 我的持仓</h2>
+                        <span class="badge badge-success">已认证</span>
+                    </div>
+
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">持有数量</div>
+                            <div class="stat-value">100</div>
+                            <div class="stat-sub">份 RWA 代币</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">当前价值</div>
+                            <div class="stat-value">$10,800</div>
+                            <div class="stat-sub">NAV: $108/份</div>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-box-title">💎 投资收益</div>
+                        <div class="info-box-text">
+                            成本: $10,000 | 当前: $10,800<br>
+                            收益: <strong style="color: #10b981;">+$800 (+8%)</strong>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-box-title">🎁 可领取分红</div>
+                        <div class="info-box-text">
+                            根据最新NAV增长,您有 <strong style="color: #667eea;">$800 USDC</strong> 可领取
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success" onclick="claimDividends()">
+                        立即领取分红 $800
+                    </button>
+                </div>
+
+                <div class="card" style="margin-top: 30px;">
+                    <div class="card-header">
+                        <h2 class="card-title">📜 我的申购记录</h2>
+                    </div>
+
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-dot completed"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">申购成功</div>
+                                <div class="timeline-desc">100份代币已发放到您的钱包</div>
+                                <div class="timeline-time">2025-10-20 14:30</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot completed"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">多签批准</div>
+                                <div class="timeline-desc">管理员已通过您的申购请求</div>
+                                <div class="timeline-time">2025-10-20 10:15</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot completed"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">支付确认</div>
+                                <div class="timeline-desc">收到10,000 USDC</div>
+                                <div class="timeline-time">2025-10-19 16:00</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot completed"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">提交申购</div>
+                                <div class="timeline-desc">申购100份 RWA代币</div>
+                                <div class="timeline-time">2025-10-19 15:45</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧 - 操作面板 -->
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">📈 申购代币</h2>
+                        <span class="badge badge-info">开放中</span>
+                    </div>
+
+                    <div class="nav-value">$108.00</div>
+                    <div class="nav-change">↑ +8.00 (+8.00%)</div>
+
+                    <div class="alert alert-info">
+                        当前NAV已从$100增长至$108,年化收益约32%
+                    </div>
+
+                    <form onsubmit="subscribe(event)">
+                        <div class="form-group">
+                            <label class="form-label">申购数量</label>
+                            <div class="input-group">
+                                <input type="number" class="form-input" id="subscribeAmount" 
+                                       placeholder="100" min="1" value="100" 
+                                       oninput="calculateCost()">
+                                <span class="input-addon">份</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">需支付金额</label>
+                            <div class="input-group">
+                                <input type="text" class="form-input" id="totalCost" 
+                                       value="10,800" readonly>
+                                <span class="input-addon">USDC</span>
+                            </div>
+                        </div>
+
+                        <div class="info-box">
+                            <div class="info-box-title">💡 操作说明</div>
+                            <div class="info-box-text">
+                                1. 输入申购数量<br>
+                                2. 确认支付USDC<br>
+                                3. 等待管理员审核(1-2工作日)<br>
+                                4. 代币自动发放到您的钱包
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            确认申购
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card" style="margin-top: 30px;">
+                    <div class="card-header">
+                        <h2 class="card-title">💸 赎回代币</h2>
+                    </div>
+
+                    <form onsubmit="redeem(event)">
+                        <div class="form-group">
+                            <label class="form-label">赎回数量</label>
+                            <div class="input-group">
+                                <input type="number" class="form-input" id="redeemAmount" 
+                                       placeholder="50" min="1" max="100" value="50"
+                                       oninput="calculateRedeemValue()">
+                                <span class="input-addon">份</span>
+                            </div>
+                            <small style="color: #6b7280; margin-top: 5px; display: block;">
+                                可用余额: 100 份
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">预计到账金额</label>
+                            <div class="input-group">
+                                <input type="text" class="form-input" id="redeemValue" 
+                                       value="5,400" readonly>
+                                <span class="input-addon">USDC</span>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            ⚠️ 赎回需要3-5个工作日处理,代币将被销毁,USDC将转入您的钱包
+                        </div>
+
+                        <button type="submit" class="btn btn-danger">
+                            确认赎回
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card" style="margin-top: 30px;">
+                    <div class="card-header">
+                        <h2 class="card-title">📄 项目文档</h2>
+                    </div>
+
+                    <div class="document-list">
+                        <div class="document-item">
+                            <div class="document-info">
+                                <div class="document-title">Q1 2025 NAV报告</div>
+                                <div class="document-meta">上传于 2025-10-25 | IPFS: QmXYZ...</div>
+                            </div>
+                            <a href="#" class="document-link">查看</a>
+                        </div>
+                        <div class="document-item">
+                            <div class="document-info">
+                                <div class="document-title">资产审计报告</div>
+                                <div class="document-meta">上传于 2025-10-15 | IPFS: QmABC...</div>
+                            </div>
+                            <a href="#" class="document-link">查看</a>
+                        </div>
+                        <div class="document-item">
+                            <div class="document-info">
+                                <div class="document-title">项目白皮书</div>
+                                <div class="document-meta">上传于 2025-09-01 | IPFS: QmDEF...</div>
+                            </div>
+                            <a href="#" class="document-link">查看</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 管理员视图 -->
+        <div id="adminView" class="main-content hidden">
+            <!-- 左侧 - 审核队列 -->
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">📋 待审核申购请求</h2>
+                        <span class="badge badge-warning">3 个待处理</span>
+                    </div>
+
+                    <div class="request-list">
+                        <div class="request-item">
+                            <div class="request-header">
+                                <span class="request-id">Request #123</span>
+                                <span class="badge badge-warning">待审核</span>
+                            </div>
+                            <div class="request-details">
+                                <div class="detail-item">
+                                    <div class="detail-label">投资人</div>
+                                    <div class="detail-value">0x742d...5e8a</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">金额</div>
+                                    <div class="detail-value">100 份 ($10,800)</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">提交时间</div>
+                                    <div class="detail-value">2025-10-27 10:30</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">KYC状态</div>
+                                    <div class="detail-value" style="color: #10b981;">✓ 已通过</div>
+                                </div>
+                            </div>
+                            <div class="request-actions">
+                                <button class="btn btn-success btn-small" onclick="approveRequest(123)">
+                                    ✓ 批准
+                                </button>
+                                <button class="btn btn-danger btn-small" onclick="rejectRequest(123)">
+                                    ✗ 拒绝
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="request-item">
+                            <div class="request-header">
+                                <span class="request-id">Request #124</span>
+                                <span class="badge badge-warning">待审核</span>
+                            </div>
+                            <div class="request-details">
+                                <div class="detail-item">
+                                    <div class="detail-label">投资人</div>
+                                    <div class="detail-value">0x8b3f...a2c1</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">金额</div>
+                                    <div class="detail-value">200 份 ($21,600)</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">提交时间</div>
+                                    <div class="detail-value">2025-10-27 11:15</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">KYC状态</div>
+                                    <div class="detail-value" style="color: #10b981;">✓ 已通过</div>
+                                </div>
+                            </div>
+                            <div class="request-actions">
+                                <button class="btn btn-success btn-small" onclick="approveRequest(124)">
+                                    ✓ 批准
+                                </button>
+                                <button class="btn btn-danger btn-small" onclick="rejectRequest(124)">
+                                    ✗ 拒绝
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="request-item">
+                            <div class="request-header">
+                                <span class="request-id">Request #125</span>
+                                <span class="badge badge-warning">待审核</span>
+                            </div>
+                            <div class="request-details">
+                                <div class="detail-item">
+                                    <div class="detail-label">投资人</div>
+                                    <div class="detail-value">0x1a2b...9c8d</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">金额</div>
+                                    <div class="detail-value">500 份 ($54,000)</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">提交时间</div>
+                                    <div class="detail-value">2025-10-27 14:22</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">KYC状态</div>
+                                    <div class="detail-value" style="color: #10b981;">✓ 已通过</div>
+                                </div>
+                            </div>
+                            <div class="request-actions">
+                                <button class="btn btn-success btn-small" onclick="approveRequest(125)">
+                                    ✓ 批准
+                                </button>
+                                <button class="btn btn-danger btn-small" onclick="rejectRequest(125)">
+                                    ✗ 拒绝
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 30px;">
+                    <div class="card-header">
+                        <h2 class="card-title">🔄 待审核赎回请求</h2>
+                        <span class="badge badge-warning">1 个待处理</span>
+                    </div>
+
+                    <div class="request-list">
+                        <div class="request-item">
+                            <div class="request-header">
+                                <span class="request-id">Redemption #56</span>
+                                <span class="badge badge-warning">待审核</span>
+                            </div>
+                            <div class="request-details">
+                                <div class="detail-item">
+                                    <div class="detail-label">投资人</div>
+                                    <div class="detail-value">0x742d...5e8a</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">赎回数量</div>
+                                    <div class="detail-value">50 份</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">应付金额</div>
+                                    <div class="detail-value">$5,400 USDC</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">提交时间</div>
+                                    <div class="detail-value">2025-10-27 09:00</div>
+                                </div>
+                            </div>
+                            <div class="alert alert-info" style="margin: 15px 0;">
+                                ⚠️ 请先完成线下转账,确认后再批准赎回(这将销毁代币)
+                            </div>
+                            <div class="request-actions">
+                                <button class="btn btn-success btn-small" onclick="approveRedemption(56)">
+                                    ✓ 确认已转账并批准
+                                </button>
+                                <button class="btn btn-danger btn-small" onclick="rejectRedemption(56)">
+                                    ✗ 拒绝
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧 - 管理操作 -->
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">📊 项目统计</h2>
+                    </div>
+
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">总发行量</div>
+                            <div class="stat-value">1,000</div>
+                            <div class="stat-sub">RWA 代币</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">资产池</div>
+                            <div class="stat-value">$108K</div>
+                            <div class="stat-sub">USDC</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">持有人数</div>
+                            <div class="stat-value">45</div>
+                            <div class="stat-sub">已认证投资人</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">当前NAV</div>
+                            <div class="stat-value">$108</div>
+                            <div class="stat-sub">每份代币</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 30px;">
+                    <div class="card-header">
+                        <h2 class="card-title">📈 更新NAV</h2>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">当前NAV</label>
+                        <div class="input-group">
+                            <input type="text" class="form-input" value="$108.00" readonly>
+                            <span class="input-addon">USDC</span>
+                        </div>
+                    </div>
+
+                    <form onsubmit="updateNAV(event)">
+                        <div class="form-group">
+                            <label class="form-label">新NAV值</label>
+                            <div class="input-group">
+                                <input type="number" class="form-input" id="newNAV" 
+                                       placeholder="110.00" step="0.01" min="0" 
+                                       oninput="calculateNAVChange()">
+                                <span class="input-addon">USDC</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">变化幅度</label>
+                            <div class="input-group">
+                                <input type="text" class="form-input" id="navChange" 
+                                       value="-" readonly>
+                                <span class="input-addon">%</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">NAV报告 (IPFS)</label>
+                            <input type="file" class="form-input" accept=".pdf,.doc,.docx">
+                            <small style="color: #6b7280; margin-top: 5px; display: block;">
+                                上传资产评估报告,将自动存储到IPFS
+                            </small>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            ⚠️ NAV更新需要多签钱包确认(2/3签名)
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            提交NAV更新(需多签)
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card" style="margin-top: 30px;">
+                    <div class="card-header">
+                        <h2 class="card-title">👥 白名单管理</h2>
+                    </div>
+
+                    <form onsubmit="addToWhitelist(event)">
+                        <div class="form-group">
+                            <label class="form-label">添加到白名单</label>
+                            <input type="text" class="form-input" id="whitelistAddress" 
+                                   placeholder="0x..." pattern="0x[a-fA-F0-9]{40}">
+                            <small style="color: #6b7280; margin-top: 5px; display: block;">
+                                或上传Excel批量导入
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">批量导入</label>
+                            <input type="file" class="form-input" accept=".xlsx,.xls,.csv">
+                        </div>
+
+                        <button type="submit" class="btn btn-success">
+                            添加到白名单
+                        </button>
+                    </form>
+
+                    <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #f0f0f0;">
+                        <div style="font-weight: 600; margin-bottom: 10px;">当前白名单 (45个地址)</div>
+                        <div style="font-size: 14px; color: #6b7280;">
+                            0x742d...5e8a, 0x8b3f...a2c1, 0x1a2b...9c8d, ...
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 30px;">
+                    <div class="card-header">
+                        <h2 class="card-title">🔐 多签交易状态</h2>
+                    </div>
+
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-dot pending"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">待签名: 批准Request #123</div>
+                                <div class="timeline-desc">
+                                    签名进度: 1/3 (Alice已签名)<br>
+                                    等待: Bob, Carol
+                                </div>
+                                <div class="timeline-time">发起于 5分钟前</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 33%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot completed"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">已执行: NAV更新至$108</div>
+                                <div class="timeline-desc">
+                                    签名者: Alice, Bob<br>
+                                    交易哈希: 0xabc...def
+                                </div>
+                                <div class="timeline-time">2小时前</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 成功提示模态框 -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">✅ 操作成功</div>
+            <div id="successMessage" style="margin-bottom: 20px;"></div>
+            <button class="btn btn-primary" onclick="closeModal('successModal')">确定</button>
+        </div>
+    </div>
+
+    <script>
+        // 视图切换
+        const investorBtn = document.getElementById('investorBtn');
+        const adminBtn = document.getElementById('adminBtn');
+        const investorView = document.getElementById('investorView');
+        const adminView = document.getElementById('adminView');
+
+        investorBtn.addEventListener('click', () => {
+            investorBtn.classList.add('active');
+            adminBtn.classList.remove('active');
+            investorView.classList.remove('hidden');
+            adminView.classList.add('hidden');
+        });
+
+        adminBtn.addEventListener('click', () => {
+            adminBtn.classList.add('active');
+            investorBtn.classList.remove('active');
+            adminView.classList.remove('hidden');
+            investorView.classList.add('hidden');
+        });
+
+        // 连接钱包
+        function connectWallet() {
+            document.getElementById('walletConnect').classList.add('hidden');
+            document.getElementById('walletConnected').classList.remove('hidden');
+            showSuccess('钱包连接成功! 地址: 0x742d...5e8a');
+        }
+
+        // 计算申购成本
+        function calculateCost() {
+            const amount = document.getElementById('subscribeAmount').value || 0;
+            const nav = 108;
+            const total = amount * nav;
+            document.getElementById('totalCost').value = total.toLocaleString();
+        }
+
+        // 计算赎回金额
+        function calculateRedeemValue() {
+            const amount = document.getElementById('redeemAmount').value || 0;
+            const nav = 108;
+            const total = amount * nav;
+            document.getElementById('redeemValue').value = total.toLocaleString();
+        }
+
+        // 申购
+        function subscribe(e) {
+            e.preventDefault();
+            const amount = document.getElementById('subscribeAmount').value;
+            const cost = document.getElementById('totalCost').value;
+            showSuccess(`申购请求已提交!
+申购数量: ${amount}份
+支付金额: ${cost} USDC
+预计1-2个工作日完成审核`);
+        }
+
+        // 赎回
+        function redeem(e) {
+            e.preventDefault();
+            const amount = document.getElementById('redeemAmount').value;
+            const value = document.getElementById('redeemValue').value;
+            showSuccess(`赎回请求已提交!
+赎回数量: ${amount}份
+预计到账: ${value} USDC
+预计3-5个工作日到账`);
+        }
+
+        // 领取分红
+        function claimDividends() {
+            showSuccess(`分红领取成功!
+$800 USDC 已转入您的钱包
+交易哈希: 0xabc123...def789`);
+        }
+
+        // 管理员批准申购
+        function approveRequest(id) {
+            showSuccess(`Request #${id} 批准成功!
+多签交易已创建,等待其他管理员签名
+当前进度: 1/3`);
+        }
+
+        // 管理员拒绝申购
+        function rejectRequest(id) {
+            if (confirm(`确定拒绝 Request #${id} 吗?`)) {
+                showSuccess(`Request #${id} 已拒绝
+将通知投资人拒绝原因`);
+            }
+        }
+
+        // 批准赎回
+        function approveRedemption(id) {
+            if (confirm('确认已完成线下转账? 批准后将销毁代币')) {
+                showSuccess(`Redemption #${id} 批准成功!
+代币已销毁,USDC已转账
+交易哈希: 0xdef456...abc123`);
+            }
+        }
+
+        // 拒绝赎回
+        function rejectRedemption(id) {
+            if (confirm(`确定拒绝 Redemption #${id} 吗?`)) {
+                showSuccess(`Redemption #${id} 已拒绝
+代币已解锁返还给投资人`);
+            }
+        }
+
+        // 更新NAV
+        function updateNAV(e) {
+            e.preventDefault();
+            const newNav = document.getElementById('newNAV').value;
+            const change = document.getElementById('navChange').value;
+            showSuccess(`NAV更新请求已提交!
+新NAV: $${newNav}
+变化: ${change}%
+等待多签钱包确认(2/3签名)`);
+        }
+
+        // 计算NAV变化
+        function calculateNAVChange() {
+            const currentNAV = 108;
+            const newNAV = parseFloat(document.getElementById('newNAV').value) || 0;
+            if (newNAV > 0) {
+                const change = ((newNAV - currentNAV) / currentNAV * 100).toFixed(2);
+                document.getElementById('navChange').value = change;
+            }
+        }
+
+        // 添加到白名单
+        function addToWhitelist(e) {
+            e.preventDefault();
+            const address = document.getElementById('whitelistAddress').value;
+            if (address) {
+                showSuccess(`地址 ${address.substring(0, 10)}... 已添加到白名单
+交易正在等待区块确认...`);
+            }
+        }
+
+        // 显示成功提示
+        function showSuccess(message) {
+            document.getElementById('successMessage').innerHTML = message.replace(/\n/g, '<br>');
+            document.getElementById('successModal').classList.add('active');
+        }
+
+        // 关闭模态框
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        // 初始化
+        calculateCost();
+        calculateRedeemValue();
+    </script>
+</body>
+</html>
